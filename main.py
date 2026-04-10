@@ -81,10 +81,9 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context_str = f"User known info: {json.dumps(context_data)}\n"
 
     # 构造校园助手的 prompt
-    prompt = f"""You are a campus assistant helping with course questions, campus life, events, etc.
-{context_str}
+    prompt = f"""User known info: {context_str}
 User question: {user_message}
-Please answer briefly and helpfully in English."""
+Please answer as the HKBU campus assistant."""
 
     # 发送 "thinking" 提示
     loading_msg = await update.message.reply_text("🤔 Thinking...")

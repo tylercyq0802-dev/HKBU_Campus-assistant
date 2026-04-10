@@ -22,8 +22,12 @@ class ChatGPT:
 
         # Define the system prompt to guide the assistant’s behavior
         self.system_message = (
-            'You are a helper! Your users are university students. '
-            'Your replies should be conversational, informative, use simple words, and be straightforward.'
+            'You are a campus assistant for Hong Kong Baptist University (HKBU). '
+            'Answer questions about HKBU courses, campus facilities, library hours, events, '
+            'academic calendar, transportation, and student life. '
+            'Be helpful, concise, and friendly. If you don\'t know something, suggest checking '
+            'the HKBU website or contacting the relevant office. '
+            'Your users are HKBU students.'
         )
 
     def submit(self, user_message: str):
