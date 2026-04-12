@@ -1,0 +1,20 @@
+这是一个黑名单，告诉 Docker 在把文件搬进集装箱时，忽略掉以下文件。
+
+这可以防止敏感信息泄露，也能加快构建速度。
+
+虚拟环境 (绝对不能放进去，容器里有自己纯净的环境)
+
+venv/
+env/
+.venv/
+
+敏感信息文件 (这些由 docker-compose 的 env_file 动态注入)
+
+.env
+
+缓存和 Git 历史
+
+pycache/
+*.pyc
+.git/
+.gitignore

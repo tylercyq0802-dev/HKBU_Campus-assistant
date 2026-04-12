@@ -1,0 +1,73 @@
+name: Deploy to Amazon ECS
+
+# Trigger: Run this workflow when code is pushed to the main branch
+on:
+  push:
+    branches: [ "main" ]
+
+# Environment variables (Names must match the resources created in AWS)
+env:
+  AWS_REGION: us-east-1                   # AWS Region where resources are deployed
+  ECR_REPOSITORY: hkbu-7940-campus-bot       # Name of the Amazon ECR repository
+  ECS_SERVICE: hkbubot-polling-service             # Name of the Amazon ECS service
+  ECS_CLUSTER: hkbu-bot-cluster       # Name of the Amazon ECS cluster
+  ECS_TASK_DEFINITION: .github/workflows/task-definition.json # Path to the ECS task definition file
+  CONTAINER_NAME: hkbubot_container       # Name of the container defined in the task definition
+
+jobs:
+  deploy:
+    name: Build, Push, and Deploy
+    runs-on: ubuntu-latest # Use GitHub-hosted Ubuntu runner to execute the job
+    environment: production
+
+    steps:
+    # Step 1: Checkout the code from GitHub repository to the runner
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Configure AWS credentials to grant GitHub Actions access to AWS resources
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # Step 3: Log in to Amazon ECR
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    # Step 4: Build the Docker image, tag it with the commit SHA, and push to ECR
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }} # Use the unique commit SHA as the image tag for traceability
+      run: |
+        # Build the Docker image
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        # Push the Docker image to ECR
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        # Save the image URI to GitHub outputs for the next steps
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    # The following steps are the core of ECS rolling updates (using ECS Fargate for orchestration)
+
+    # Step 5: Inject the new image ID into the Amazon ECS task definition
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    # Step 6: Deploy the updated Amazon ECS task definition (Triggers Rolling Update)
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true # Wait for the new service to fully start and take over traffic

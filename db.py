@@ -1,3 +1,26 @@
+import os
+from dotenv import load_dotenv
+
+# Extract the real secret key from the .env file
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+BOT_TOKEN = os.getenv("TG_BOT_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+required_envs = {
+    "DATABASE_URL": DATABASE_URL,
+    "TG_BOT_TOKEN": BOT_TOKEN,
+    "OPENAI_API_KEY": OPENAI_API_KEY
+}
+
+for env_name, env_value in required_envs.items():
+    if not env_value:
+        raise ValueError(f"🚨 Fatal error: Missing required environment variable '{env_name}'! Please check your .env file or system configuration.")
+
+print("✅ All core environment secret keys loaded successfully. Bot is starting up...")
+
+
 """
 数据库操作模块 - 连接 Supabase PostgreSQL
 """
@@ -6,10 +29,6 @@ import json
 import psycopg2
 from psycopg2.extras import Json
 from dotenv import load_dotenv
-
-load_dotenv()  # 加载 .env 文件
-
-DATABASE_URL = os.getenv("DATABASE_URL")
 
 def get_connection():
     """获取数据库连接"""

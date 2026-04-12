@@ -61,7 +61,7 @@ class ChatGPT:
 if __name__ == '__main__':
     # Load configuration from ini file
     config = configparser.ConfigParser()
-    config.read('config.ini')    
+    config.read('config(cleaned).ini')    
 
     # Initialize ChatGPT client
     chatGPT = ChatGPT(config)

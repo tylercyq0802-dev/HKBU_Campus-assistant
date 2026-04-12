@@ -1,0 +1,72 @@
+{
+    "family": "hkbubot-task-def",
+    "containerDefinitions": [
+        {
+            "name": "hkbubot_container",
+            "image": "244933794250.dkr.ecr.us-east-1.amazonaws.com/hkbu-7940-campus-bot",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "hkbubot_container-8080-tcp",
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "WEBHOOK_URL",
+                    "value": "/"
+                },
+                {
+                    "name": "DATABASE_URL",
+                    "value": "postgresql://postgres.dqmtuohsofgbysjdrftn:qq1289285714@aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres"
+                },
+                {
+                    "name": "OPENAI_API_KEY",
+                    "value": "654bf34b-3de2-4b6b-8b44-f63561e45c5f"
+                },
+                {
+                    "name": "TG_BOT_TOKEN",
+                    "value": "8261204745:AAFfcomO_hdWuqGxiW40eNcndPjeyvwlMHY"
+                },
+                {
+                    "name": "ENV",
+                    "value": "Polling"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/hkbubot-task-def",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "taskRoleArn": "arn:aws:iam::244933794250:role/ecsTaskExecutionRole-hkbubot",
+    "executionRoleArn": "arn:aws:iam::244933794250:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "enableFaultInjection": false
+}
