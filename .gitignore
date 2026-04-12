@@ -1,0 +1,7 @@
+# Ignore the environment secret key file.
+.env
+config.ini
+
+# Ignore Python cache
+__pycache__/
+*.pyc
