@@ -1,18 +1,18 @@
-这是一个黑名单，告诉 Docker 在把文件搬进集装箱时，忽略掉以下文件。
+This is a blacklist that tells Docker to ignore the following files when moving files into the container.
 
-这可以防止敏感信息泄露，也能加快构建速度。
+This can prevent sensitive information from being leaked and also speed up the build process.
 
-虚拟环境 (绝对不能放进去，容器里有自己纯净的环境)
+Virtual environments (absolutely should not be included, the container has its own clean environment)
 
 venv/
 env/
 .venv/
 
-敏感信息文件 (这些由 docker-compose 的 env_file 动态注入)
+Sensitive information files (these are dynamically injected by docker-compose through env_file)
 
 .env
 
-缓存和 Git 历史
+Cache and Git history
 
 pycache/
 *.pyc
