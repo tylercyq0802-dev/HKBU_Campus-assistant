@@ -1,18 +1,18 @@
 version: '3.8'
-# 【DevOps 规范优化】显式定义项目名称 (Project Name)
-# 这个名字决定了 Docker Desktop 最外层折叠组的名字（大楼名字）
+# [DevOps Standards Optimization] Explicitly define project name (Project Name)
+# This name determines the outermost folded group name in Docker Desktop (the building name)
 name: hkbu_7940_campusbot_project
 
-# Services 就是我们要启动的各种服务
+# Services are the various services we want to start
 services:
   telegram-bot:
-    # 告诉 Docker Compose，使用当前目录的 Dockerfile 来构建镜像
+    # Tell Docker Compose to use the Dockerfile in the current directory to build the image
     build: .
-    # 给这个容器起个好听的名字
+    # Give this container a nice name
     container_name: hkbu_7940_campusbot_prod
-    # 容器崩溃或电脑重启时，自动重启它（保障高可用性）
+    # Automatically restart it if the container crashes or the computer restarts (ensuring high availability)
     restart: unless-stopped
-    # 【安全核心】这里我们将本地的 .env 文件注入到容器内部的环境变量中
-    # 这样，密码就不会出现在代码仓库或镜像里了
+    # [Security Core] Here we inject the local .env file into the container's environment variables
+    # This way, passwords do not appear in the code repository or the image
     env_file:
       - .env
