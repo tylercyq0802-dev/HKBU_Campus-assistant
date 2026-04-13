@@ -94,7 +94,7 @@ def main():
     if os.getenv("ENV") == "Webhook":
         logging.info("☁️Running in Webhook mode (HKBUbot)...")
         
-        # 从环境变量获取云端 ALB 域名配置的回调地址 (例如 https://your-alb-domain.com)
+        # Retrieve the callback URL for your cloud-based ALB domain configuration from environment variables (e.g., https://your-alb-domain.com).
         webhook_url = os.getenv("WEBHOOK_URL")
         if not webhook_url:
             raise ValueError("🚨 Fatal error: WEBHOOK_URL environment variable missing in production environment!")
