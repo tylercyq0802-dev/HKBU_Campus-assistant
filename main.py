@@ -88,16 +88,16 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, callback))
 
     logging.info('Bot started!')
-    # app.run_polling()
-    # ---------------- 核心修改：Webhook 与长轮询环境判断逻辑 ----------------
-    # 检查当前是否在生产环境（云端）。在本地测试时，你的 .env 里面不要写 ENV=production
+  # app.run_polling()
+# ---------------- Core modification: Webhook and long polling environment judgment logic ----------------
+# Check whether currently in a production environment (cloud). When testing locally, do not write ENV=production in your .env
     if os.getenv("ENV") == "Webhook":
-        logging.info("☁️ 正在以 Webhook 模式运行 (HKBUbot)...")
+        logging.info("☁️Running in Webhook mode (HKBUbot)...")
         
         # 从环境变量获取云端 ALB 域名配置的回调地址 (例如 https://your-alb-domain.com)
         webhook_url = os.getenv("WEBHOOK_URL")
         if not webhook_url:
-            raise ValueError("🚨 致命错误: 生产环境缺失 WEBHOOK_URL 环境变量！")
+            raise ValueError("🚨 Fatal error: WEBHOOK_URL environment variable missing in production environment!")
             
         app.run_webhook(
             listen="0.0.0.0",
@@ -105,7 +105,7 @@ def main():
             webhook_url=webhook_url
         )
     else:
-        logging.info("💻 正在以 Polling 模式运行 (HKBUbot)...")
+        logging.info("💻 Running in Polling mode (HKBUbot)...")
         app.run_polling()
 
 async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
