@@ -138,6 +138,10 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         update_user_context(user_id, key, value)
         reply = f"✅ I've remembered: {key} = {value}"
         await update.message.reply_text(reply)
+        print(f"============= New instructions =============", flush=True)
+        print(f"User Request: {user_message}", flush=True)
+        print(f"Bot Response: {reply}", flush=True)
+        print(f"==================================", flush=True)
         save_chat_log(user_id, user_message, reply)
         return
 
@@ -160,6 +164,10 @@ Please answer as the HKBU campus assistant."""
 
     # Edit message, reply with the result
     await loading_msg.edit_text(response)
+    print(f"============= New conversation =============", flush=True)
+    print(f"User Request: {user_message}", flush=True)
+    print(f"Bot Response: {response}", flush=True)
+    print(f"==================================", flush=True)
 
     # Save the chat log to the database
     save_chat_log(user_id, user_message, response)
