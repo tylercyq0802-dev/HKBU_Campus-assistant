@@ -22,7 +22,7 @@ print("✅ All core environment secret keys loaded successfully. Bot is starting
 
 
 """
-数据库操作模块 - 连接 Supabase PostgreSQL
+Database Operation Module - Connect to Supabase PostgreSQL
 """
 import os
 import json
@@ -31,14 +31,14 @@ from psycopg2.extras import Json
 from dotenv import load_dotenv
 
 def get_connection():
-    """获取数据库连接"""
+    """Get database connection"""
     return psycopg2.connect(DATABASE_URL)
 
 def init_db():
-    """初始化数据库：创建表（只需运行一次）"""
+    """Initialize the database: create tables (only need to run once)"""
     conn = get_connection()
     cur = conn.cursor()
-    # 对话日志表
+    # Dialogue Log Table
     cur.execute("""
         CREATE TABLE IF NOT EXISTS chat_logs (
             id SERIAL PRIMARY KEY,
@@ -48,7 +48,7 @@ def init_db():
             created_at TIMESTAMP DEFAULT NOW()
         );
     """)
-    # 用户上下文表（存储记住的信息）
+    # User Context Table (Stores remembered information)
     cur.execute("""
         CREATE TABLE IF NOT EXISTS user_context (
             user_id BIGINT PRIMARY KEY,
@@ -62,7 +62,7 @@ def init_db():
     print("Database initialized (tables created).")
 
 def save_chat_log(user_id: int, user_message: str, bot_response: str):
-    """保存一条对话记录"""
+    """Save a conversation record"""
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
@@ -74,7 +74,7 @@ def save_chat_log(user_id: int, user_message: str, bot_response: str):
     conn.close()
 
 def get_user_context(user_id: int) -> dict:
-    """获取用户记住的信息（返回字典）"""
+    """Get the information remembered by the user (returns a dictionary)"""
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("SELECT context_data FROM user_context WHERE user_id = %s", (user_id,))
@@ -86,10 +86,10 @@ def get_user_context(user_id: int) -> dict:
     return {}
 
 def update_user_context(user_id: int, key: str, value: str):
-    """更新或添加用户的某条记忆（key-value）"""
+    """Update or add a user's specific memory (key-value)"""
     conn = get_connection()
     cur = conn.cursor()
-    # 先获取现有数据
+   # First, obtain the existing data
     cur.execute("SELECT context_data FROM user_context WHERE user_id = %s", (user_id,))
     row = cur.fetchone()
     if row:
